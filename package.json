@@ -7,6 +7,7 @@
   "author": "Aimee Gamble-Milner",
   "license": "MIT",
   "scripts": {
+    "prepublish": "yarn build",
     "build": "tsc"
   },
   "dependencies": {
