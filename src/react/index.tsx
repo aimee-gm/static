@@ -8,13 +8,13 @@ export function useLocation() {
   return useContext(LocationContext);
 }
 
-export function renderReact<T>(
-  content: (data: T) => JSX.Element
-): ContentGenerator<T> {
-  return (abspath: string, data: T) => {
+export function renderReact(
+  content: () => JSX.Element
+): ContentGenerator {
+  return (abspath: string) => {
     const composed = (
       <LocationContext.Provider value={abspath}>
-        {content(data)}
+        {content()}
       </LocationContext.Provider>
     );
 

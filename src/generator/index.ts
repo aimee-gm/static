@@ -1,12 +1,8 @@
 import fs from "fs";
 import path from "path";
 import { ensureDir } from "../utils/ensureDir";
-import { FileData } from "../types";
 
-export type ContentGenerator<T extends {}> = (
-  abspath: string,
-  data: T
-) => string;
+export type ContentGenerator = (abspath: string) => string;
 
 interface RenderOptions {
   outDir: string;
@@ -15,8 +11,7 @@ interface RenderOptions {
 
 interface RegisteredPage {
   urlpath: string;
-  content: ContentGenerator<any>;
-  data?: any;
+  content: ContentGenerator;
 }
 
 const pages: RegisteredPage[] = [];
@@ -39,44 +34,13 @@ function checkPath(urlpath: string) {
 /**
  *  Register a single page for static generation
  */
-export function register<T>(
+export function register(
   urlpath: string,
-  content: ContentGenerator<T>
+  content: ContentGenerator
 ): void {
   checkPath(urlpath);
 
   pages.push({ urlpath, content });
-}
-
-/**
- * Register a single page for static generation.
- * The data param will be passed to the content generator
- */
-export function registerOne<T>(
-  urlpath: string,
-  data: T,
-  content: ContentGenerator<T>
-): void {
-  checkPath(urlpath);
-
-  pages.push({ urlpath, content, data });
-}
-
-/**
- * Register a collection of pages for static generation.
- * Each item in the collection will be passed to the content generator.
- * URLs are constructed using the prefix parameter and the relative path
- * of the source file to the base folder searched.
- */
-export function registerAll<T extends FileData>(
-  prefix: string,
-  collection: T[],
-  content: ContentGenerator<T>
-) {
-  collection.forEach(data => {
-    const urlpath = path.join(prefix, data.relpath);
-    registerOne(urlpath, data, content);
-  });
 }
 
 /**
@@ -99,7 +63,7 @@ export function render(opts: Partial<RenderOptions> = {}) {
     const abspath = makeAbspath(page.urlpath);
     const filepath = makeFilepath(outDir, abspath);
     ensureDir(filepath);
-    const content = postRender(page.content(abspath, page.data));
+    const content = postRender(page.content(abspath));
     console.log(`Writing ${filepath}`);
     fs.writeFileSync(filepath, content);
   }
