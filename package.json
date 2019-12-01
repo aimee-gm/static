@@ -1,6 +1,6 @@
 {
   "name": "@aimee.gm/static",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A static site generator",
   "main": "dist/index.js",
   "repository": "https://github.com/aimee-gm/static.git",
