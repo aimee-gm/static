@@ -8,7 +8,8 @@
   "license": "MIT",
   "scripts": {
     "prepublishOnly": "rm -rf dist && yarn build",
-    "build": "tsc"
+    "build": "tsc",
+    "test": "mocha --require ts-node/register **/*.spec.ts"
   },
   "dependencies": {
     "front-matter": "^3.0.2",
@@ -17,13 +18,18 @@
     "mkdirp": "^0.5.1"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.5",
     "@types/glob": "^7.1.1",
     "@types/js-yaml": "^3.12.1",
     "@types/mkdirp": "^0.5.2",
+    "@types/mocha": "^5.2.7",
     "@types/node": "^12.12.14",
     "@types/react": "^16.9.13",
     "@types/react-dom": "^16.9.4",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2",
     "prettier": "^1.19.1",
+    "ts-node": "^8.5.4",
     "typescript": "^3.7.2"
   },
   "peerDependencies": {

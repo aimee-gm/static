@@ -1,70 +1,36 @@
 import fs from "fs";
-import path from "path";
 import { ensureDir } from "../utils/ensureDir";
+import { getOutputPath } from "../utils/getOutputPath";
 
-export type ContentGenerator = (abspath: string) => string;
+interface PageToRender {
+  path: string;
+  render: (abspath: string) => string;
+}
 
 interface RenderOptions {
-  outDir: string;
-  postRender: (html: string) => string;
-}
-
-interface RegisteredPage {
-  urlpath: string;
-  content: ContentGenerator;
-}
-
-const pages: RegisteredPage[] = [];
-
-function makeFilepath(outDir: string, abspath: string) {
-  return path.resolve(outDir, abspath.replace(/^\//, "./"), "index.html");
-}
-
-function makeAbspath(urlpath: string) {
-  return urlpath.replace(/^(.?\/?)/, "/").replace(/(\/?)$/, "/");
-}
-
-function checkPath(urlpath: string) {
-  if (pages.some(p => p.urlpath === urlpath)) {
-    console.error(`Unable to register ${urlpath}: already exists`);
-    process.exit(1);
-  }
-}
-
-/**
- *  Register a single page for static generation
- */
-export function register(
-  urlpath: string,
-  content: ContentGenerator
-): void {
-  checkPath(urlpath);
-
-  pages.push({ urlpath, content });
+  pages: PageToRender[];
+  outDir?: string;
+  postRender?: (html: string) => string;
 }
 
 /**
  * Render all registered pages to static HTML files.
  */
-export function render(opts: Partial<RenderOptions> = {}) {
-  const { outDir, postRender } = {
+export function render(opts: RenderOptions) {
+  const { outDir, postRender, pages }: Required<RenderOptions> = {
     outDir: process.cwd(),
     postRender: (val: string) => val,
     ...opts
   };
 
-  while (pages.length) {
-    const page = pages.pop();
-
-    if (!page) {
-      break;
-    }
-
-    const abspath = makeAbspath(page.urlpath);
-    const filepath = makeFilepath(outDir, abspath);
+  pages.forEach(page => {
+    const filepath = getOutputPath(outDir, page.path);
     ensureDir(filepath);
-    const content = postRender(page.content(abspath));
-    console.log(`Writing ${filepath}`);
+
+    const html = page.render(page.path);
+    const content = postRender(html);
+
+    console.log(`Writing ${page.path}`);
     fs.writeFileSync(filepath, content);
-  }
+  });
 }
