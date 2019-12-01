@@ -14,6 +14,10 @@ describe("getOutputPath()", () => {
     );
   });
 
+  it("should return /index.html for the base path", () => {
+    expect(getOutputPath("/base/", "/")).to.equal("/base/index.html");
+  });
+
   it("should throw an error when missing a leading slash", () => {
     expect(() => getOutputPath("/base", "folder/file.html")).to.throw();
   });

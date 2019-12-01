@@ -1,6 +1,6 @@
 import path from "path";
 
-const regex = /^\/(.*)\/([^/]+\.html)?$/;
+const regex = /^\/((.*)\/)?([^/]+\.html)?$/;
 
 export function getOutputPath(basePath: string, input: string) {
   const isValid = Boolean(input.match(regex));
