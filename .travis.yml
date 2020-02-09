@@ -27,9 +27,10 @@ jobs:
         - yarn build
       deploy:
         provider: npm
-        skip-cleanup: true
+        cleanup: false
         email: $NPM_EMAIL
-        api_key: $NPM_APIKEY
+        api_token: $NPM_APIKEY
+        edge: true
         on:
           tags: true
 
