@@ -1,0 +1,37 @@
+language: node_js
+
+node_js: "lts/*"
+
+cache:
+  directories:
+    - ~/.npm
+
+stages:
+  - name: test
+  - name: deploy
+    if: tag =~ ^v
+
+jobs:
+  include:
+    - name: "node:lts"
+      stage: test
+      script:
+        - yarn build
+        - yarn test
+    - name: "node:latest"
+      node_js: "node"
+      stage: test
+    - name: "npm"
+      stage: deploy
+      script:
+        - yarn build
+      deploy:
+        provider: npm
+        skip-cleanup: true
+        email: $NPM_EMAIL
+        api_key: $NPM_APIKEY
+        on:
+          tags: true
+
+notifications:
+  email: false
