@@ -1,7 +1,7 @@
 import fs from "fs";
 import { sync } from "glob";
 
-interface GlobResult {
+export interface GlobResult {
   filepath: string;
   contents: string;
 }
