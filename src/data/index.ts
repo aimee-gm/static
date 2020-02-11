@@ -6,11 +6,16 @@ import { parseYaml } from "./yaml";
 
 type DataFileExt = "md" | "yml" | "yaml";
 
+export interface FileData {
+  filepath: string;
+  relpath: string;
+}
+
 interface LoadDataFilesOpts {
   ext?: DataFileExt[];
 }
 
-function extractData<T extends {}>(filepath: string, contents: string): T {
+function extractData(filepath: string, contents: string) {
   const ext = extname(filepath);
 
   switch (ext) {
@@ -24,7 +29,7 @@ function extractData<T extends {}>(filepath: string, contents: string): T {
   throw new Error(`Cannot extract data from unknown extension ${ext}`);
 }
 
-export function loadDataFiles<T>(
+export function loadDataFiles<T extends FileData>(
   basePath: string,
   opts: LoadDataFilesOpts = {}
 ): T[] {
@@ -34,7 +39,7 @@ export function loadDataFiles<T>(
 
   return raw.map(({ filepath, contents }) => {
     const relpath = getRelativePath(basePath, filepath);
-    const data = extractData<T>(filepath, contents);
+    const data: T = extractData(filepath, contents);
 
     return {
       ...data,
