@@ -2,7 +2,7 @@ import path from "path";
 
 const regex = /^\/((.*)\/)?([^/]+\.html)?$/;
 
-export function getOutputPath(basePath: string, input: string) {
+export function getOutputPath(basePath: string, input: string): string {
   const isValid = Boolean(input.match(regex));
 
   if (!isValid) {

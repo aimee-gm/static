@@ -9,7 +9,8 @@
   "scripts": {
     "prepublishOnly": "rm -rf dist && yarn build",
     "build": "tsc",
-    "test": "mocha --require ts-node/register **/*.spec.ts"
+    "test": "mocha --require ts-node/register **/*.spec.ts",
+    "lint": "eslint . --ext=js,ts,tsx"
   },
   "dependencies": {
     "front-matter": "^3.0.2",
@@ -18,6 +19,7 @@
     "mkdirp": "^0.5.1"
   },
   "devDependencies": {
+    "@aimee.gm/eslint-config": "^1.0.1",
     "@types/chai": "^4.2.5",
     "@types/glob": "^7.1.1",
     "@types/js-yaml": "^3.12.1",
@@ -27,8 +29,11 @@
     "@types/react": "^16.9.13",
     "@types/react-dom": "^16.9.4",
     "chai": "^4.2.0",
+    "eslint": "^6.8.0",
     "mocha": "^6.2.2",
     "prettier": "^1.19.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "ts-node": "^8.5.4",
     "typescript": "^3.7.2"
   },
