@@ -1,4 +1,5 @@
 import fs from "fs";
+
 import { ensureDir } from "../utils/ensureDir";
 import { getOutputPath } from "../utils/getOutputPath";
 
@@ -16,7 +17,7 @@ interface RenderOptions {
 /**
  * Render all registered pages to static HTML files.
  */
-export function render(opts: RenderOptions) {
+export function render(opts: RenderOptions): void {
   const { outDir, postRender, pages }: Required<RenderOptions> = {
     outDir: process.cwd(),
     postRender: (val: string) => val,

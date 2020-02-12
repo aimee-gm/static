@@ -1,6 +1,7 @@
+import { extname } from "path";
+
 import { glob } from "../utils/glob";
 import { parseFrontMatter } from "./font-matter";
-import { extname } from "path";
 import { getRelativePath } from "../utils/getRelativePath";
 import { parseYaml } from "./yaml";
 
@@ -15,7 +16,7 @@ interface LoadDataFilesOpts {
   ext?: DataFileExt[];
 }
 
-function extractData(filepath: string, contents: string) {
+function extractData(filepath: string, contents: string): {} {
   const ext = extname(filepath);
 
   switch (ext) {
@@ -29,17 +30,17 @@ function extractData(filepath: string, contents: string) {
   throw new Error(`Cannot extract data from unknown extension ${ext}`);
 }
 
-export function loadDataFiles<T extends FileData>(
+export function loadDataFiles<T extends {}>(
   basePath: string,
   opts: LoadDataFilesOpts = {}
-): T[] {
+): (T & FileData)[] {
   const options: Required<LoadDataFilesOpts> = { ext: ["md", "yml"], ...opts };
 
   const raw = glob(`${basePath}/**/*.{${options.ext.join()}}`);
 
   return raw.map(({ filepath, contents }) => {
     const relpath = getRelativePath(basePath, filepath);
-    const data: T = extractData(filepath, contents);
+    const data = extractData(filepath, contents) as T;
 
     return {
       ...data,

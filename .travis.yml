@@ -7,20 +7,29 @@ cache:
     - ~/.npm
 
 stages:
+  - name: lint
   - name: test
+  - name: build
   - name: deploy
     if: tag =~ ^v
 
 jobs:
   include:
-    - name: "node:lts"
-      stage: test
+    - name: "lint"
+      stage: lint
       script:
-        - yarn build
-        - yarn test
-    - name: "node:latest"
+        - yarn lint
+    - name: "test:lts"
+      stage: test
+    - name: "test:latest"
       node_js: "node"
       stage: test
+    - name: "build"
+      stage: build
+      script:
+        - yarn build
+      on:
+        tags: false
     - name: "npm"
       stage: deploy
       script:
