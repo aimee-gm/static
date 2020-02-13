@@ -14,6 +14,7 @@ export interface FileData {
 
 interface LoadDataFilesOpts {
   ext?: DataFileExt[];
+  castToFolder?: boolean;
 }
 
 function extractData(filepath: string, contents: string): {} {
@@ -34,18 +35,21 @@ export function loadDataFiles<T extends {}>(
   basePath: string,
   opts: LoadDataFilesOpts = {}
 ): (T & FileData)[] {
-  const options: Required<LoadDataFilesOpts> = { ext: ["md", "yml"], ...opts };
+  const { ext, castToFolder }: Required<LoadDataFilesOpts> = {
+    ext: ["md", "yml"],
+    castToFolder: true,
+    ...opts
+  };
 
-  const raw = glob(`${basePath}/**/*.{${options.ext.join()}}`);
+  const raw = glob(`${basePath}/**/*.{${ext.join()}}`);
 
   return raw.map(({ filepath, contents }) => {
-    const relpath = getRelativePath(basePath, filepath);
     const data = extractData(filepath, contents) as T;
 
     return {
       ...data,
       filepath,
-      relpath
+      relpath: getRelativePath(basePath, filepath, castToFolder)
     };
   });
 }
